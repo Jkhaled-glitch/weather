@@ -1,0 +1,55 @@
+
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/borderedittext"
+        android:gravity="center"
+        >
+        <ImageView
+            android:id="@+id/iconWeather_widget"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon04d"
+            android:layout_margin="5dp"
+            />
+
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+
+            >
+            <TextView
+                android:id="@+id/tvTemp_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:text="20 °C"/>
+            <TextView
+                android:id="@+id/tvCity_widget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:text="London, US"/>
+
+
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+
