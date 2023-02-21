@@ -1,17 +1,21 @@
-
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/widget"
+    android:orientation="vertical">
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@drawable/borderedittext"
+
         android:gravity="center"
         >
         <ImageView
             android:id="@+id/iconWeather_widget"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
             android:src="@drawable/icon04d"
             android:layout_margin="5dp"
@@ -26,22 +30,42 @@
             android:gravity="center_vertical"
 
             >
-            <TextView
-                android:id="@+id/tvTemp_widget"
+            <RelativeLayout
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                android:text="20 °C"/>
+                android:orientation="horizontal"
+                >
+
+                <TextView
+                    android:id="@+id/tvTemp_widget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="temp"
+                    android:textColor="#ddd"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/btn_widget"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/ic_baseline_refresh_24"
+                    android:scaleType="centerCrop" />
+
+            </RelativeLayout>
             <TextView
                 android:id="@+id/tvCity_widget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:textColor="#eee"
 
-                android:textSize="30sp"
+                android:textSize="25sp"
                 android:textStyle="bold"
-                android:text="London, US"/>
+                android:text="city, country"/>
 
 
 
@@ -50,6 +74,12 @@
 
 
 
+
     </LinearLayout>
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/item_forecast_widget"/>
+</LinearLayout>
 
 
