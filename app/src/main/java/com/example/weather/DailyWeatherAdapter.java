@@ -42,7 +42,7 @@ public class DailyWeatherAdapter extends ArrayAdapter<Weather> {
                 .load("http://api.openweathermap.org/img/w/"+weather.getIcon()+".png")
                 .intoImageView(itemIcon);
         Date date= new Date(weather.getDate()*1000);
-        DateFormat dateFormat =new SimpleDateFormat("EEE,MMM  HH:mm", Locale.ENGLISH);
+        DateFormat dateFormat =new SimpleDateFormat("EEE,dd MMM  ", Locale.ENGLISH);
         dateFormat.setTimeZone(TimeZone.getTimeZone(weather.getTimeZone()));
         itemDate.setText(dateFormat.format(date));
 

@@ -1,6 +1,7 @@
 package com.example.weather;
 
 
+
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -51,265 +52,267 @@ public class NewAppWidget extends AppWidgetProvider {
 
         //api openweathermap
         String city=citySaved(context);
-            FusedLocationProviderClient fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(context);
-            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
-                fusedLocationProviderClient.getLastLocation()
-                        .addOnSuccessListener(new OnSuccessListener<Location>() {
-                            @Override
-                            public void onSuccess(Location location) {
-                                if (location !=null){
-                                    Geocoder geocoder=new Geocoder(context, Locale.getDefault());
-                                    List<Address> addresses= null;
-                                    try {
-                                        addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+        FusedLocationProviderClient fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(context);
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
 
-
-
-
-                                        Ion.with(context)
-                                                .load("http://api.openweathermap.org/data/2.5/weather?q="+addresses.get(0).getLocality()+"&&units=metric&appid="+API_KEY)
-                                                .asJsonObject()
-                                                .setCallback(new FutureCallback<JsonObject>() {
-                                                    @Override
-                                                    public void onCompleted(Exception e, JsonObject result) {
-                                                        // do stuff with the result
-                                                        int cod = result.get("cod").getAsInt();
-                                                        if(!(e!=null) && cod==200) {
-
-                                                            //convert JSON response to java
-                                                            JsonObject main = result.get("main").getAsJsonObject();
-                                                            Double temp = main.get("temp").getAsDouble();
-                                                            widgetTexttemp = temp+" °C";
-
-                                                            String name = result.get("name").getAsString();
-                                                            JsonObject sys = result.get("sys").getAsJsonObject();
-                                                            String country = sys.get("country").getAsString();
-                                                            widgetTextcity= name + ", " + country;
-
-                                                            JsonArray weather =result.get("weather").getAsJsonArray();
-                                                            String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
-                                                            //print the image
-                                                            //loadIcon(icon);
-                                                            //save the data
-                                                            // Construct the RemoteViews object
-                                                            final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                                            views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
-                                                            views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
+            fusedLocationProviderClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location !=null){
+                                Geocoder geocoder=new Geocoder(context, Locale.getDefault());
+                                List<Address> addresses= null;
+                                try {
+                                    addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+                                    double lat=addresses.get(0).getLatitude();
+                                    double lon=addresses.get(0).getLongitude();
+                                    String urlAPI="http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=metric&appid="+API_KEY;
 
 
-                                                            String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
-                                                            try {
-                                                                Bitmap bitmap =
-                                                                        Glide.with(context)
-                                                                                .asBitmap()
-                                                                                .load(iconUrl)
-                                                                                .submit(512, 512)
-                                                                                .get();
+                                    Ion.with(context)
+                                            .load(urlAPI)
+                                            .asJsonObject()
+                                            .setCallback(new FutureCallback<JsonObject>() {
+                                                @Override
+                                                public void onCompleted(Exception e, JsonObject result) {
+                                                    // do stuff with the result
+                                                    int cod = result.get("cod").getAsInt();
+                                                    if(!(e!=null) && cod==200) {
 
-                                                                views.setImageViewBitmap(R.id.iconWeather_widget, bitmap);
-                                                            }catch(Exception exception){
-                                                                //handle exceptions (on n'affiche rien
-                                                            }
+                                                        //convert JSON response to java
+                                                        JsonObject main = result.get("main").getAsJsonObject();
+                                                        Double temp = main.get("temp").getAsDouble();
+                                                        widgetTexttemp = temp+" °C";
+
+                                                        String name = result.get("name").getAsString();
+                                                        JsonObject sys = result.get("sys").getAsJsonObject();
+                                                        String country = sys.get("country").getAsString();
+                                                        widgetTextcity= name + ", " + country;
+
+                                                        JsonArray weather =result.get("weather").getAsJsonArray();
+                                                        String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
+                                                        //print the image
+                                                        //loadIcon(icon);
+                                                        //save the data
+                                                        // Construct the RemoteViews object
+                                                        final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
+                                                        views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                                        views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
 
 
+                                                        String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
+                                                        try {
+                                                            Bitmap bitmap =
+                                                                    Glide.with(context)
+                                                                            .asBitmap()
+                                                                            .load(iconUrl)
+                                                                            .submit(512, 512)
+                                                                            .get();
 
-
-
-                                                            // Create an Intent to launch ExampleActivity
-                                                            Intent intent = new Intent(context, NewAppWidget.class);
-                                                            intent.setAction(ACTION_SIMPLEAPPWIDGET);
-
-                                                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                                                    /* context = */ context,
-                                                                    /* requestCode = */ 0,
-                                                                    /* intent = */ intent,
-                                                                    /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                                                            );
-
-                                                            // Get the layout for the widget and attach an on-click listener
-                                                            views.setOnClickPendingIntent(R.id.btn_widget, pendingIntent);
-
-                                                            // Tell the AppWidgetManager to perform an update on the current app widget.
-                                                            appWidgetManager.updateAppWidget(appWidgetId, views);
-
-                                                            // Instruct the widget manager to update the widget
-                                                            appWidgetManager.updateAppWidget(appWidgetId, views);
-
+                                                            views.setImageViewBitmap(R.id.iconWeather_widget, bitmap);
+                                                        }catch(Exception exception){
+                                                            //handle exceptions (on n'affiche rien
                                                         }
+
+
+
+
+
+                                                        // Create an Intent to launch ExampleActivity
+                                                        Intent intent = new Intent(context, NewAppWidget.class);
+                                                        intent.setAction(ACTION_SIMPLEAPPWIDGET);
+
+                                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                                                /* context = */ context,
+                                                                /* requestCode = */ 0,
+                                                                /* intent = */ intent,
+                                                                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                                        );
+
+                                                        // Get the layout for the widget and attach an on-click listener
+                                                        views.setOnClickPendingIntent(R.id.btn_widget, pendingIntent);
+
+                                                        // Tell the AppWidgetManager to perform an update on the current app widget.
+                                                        appWidgetManager.updateAppWidget(appWidgetId, views);
+
+                                                        // Instruct the widget manager to update the widget
+                                                        appWidgetManager.updateAppWidget(appWidgetId, views);
+
                                                     }
+                                                }
 
 
-                                                });
-
-
-
-
-
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                        Ion.with(context)
-                                                .load("http://api.openweathermap.org/data/2.5/weather?q="+city+"&&units=metric&appid="+API_KEY)
-                                                .asJsonObject()
-                                                .setCallback(new FutureCallback<JsonObject>() {
-                                                    @Override
-                                                    public void onCompleted(Exception e, JsonObject result) {
-                                                        // do stuff with the result
-                                                        int cod = result.get("cod").getAsInt();
-                                                        if(!(e!=null) && cod==200) {
-
-                                                            //convert JSON response to java
-                                                            JsonObject main = result.get("main").getAsJsonObject();
-                                                            Double temp = main.get("temp").getAsDouble();
-                                                            widgetTexttemp = temp+" °C";
-
-                                                            String name = result.get("name").getAsString();
-                                                            JsonObject sys = result.get("sys").getAsJsonObject();
-                                                            String country = sys.get("country").getAsString();
-                                                            widgetTextcity= name + ", " + country;
-
-                                                            JsonArray weather =result.get("weather").getAsJsonArray();
-                                                            String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
-                                                            //print the image
-                                                            //loadIcon(icon);
-                                                            //save the data
-                                                            // Construct the RemoteViews object
-                                                            final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                                            views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
-                                                            views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
-
-
-                                                            String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
-                                                            try {
-                                                                Bitmap bitmap =
-                                                                        Glide.with(context)
-                                                                                .asBitmap()
-                                                                                .load(iconUrl)
-                                                                                .submit(512, 512)
-                                                                                .get();
-
-                                                                views.setImageViewBitmap(R.id.iconWeather_widget, bitmap);
-                                                            }catch(Exception exception){
-                                                                //handle exceptions (on n'affiche rien
-                                                            }
+                                            });
 
 
 
 
 
-                                                            // Create an Intent to launch ExampleActivity
-                                                            Intent intent = new Intent(context, NewAppWidget.class);
-                                                            intent.setAction(ACTION_SIMPLEAPPWIDGET);
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    Ion.with(context)
+                                            .load("http://api.openweathermap.org/data/2.5/weather?q="+city+"&&units=metric&appid="+API_KEY)
+                                            .asJsonObject()
+                                            .setCallback(new FutureCallback<JsonObject>() {
+                                                @Override
+                                                public void onCompleted(Exception e, JsonObject result) {
+                                                    // do stuff with the result
+                                                    int cod = result.get("cod").getAsInt();
+                                                    if(!(e!=null) && cod==200) {
 
-                                                            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                                                    /* context = */ context,
-                                                                    /* requestCode = */ 0,
-                                                                    /* intent = */ intent,
-                                                                    /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                                                            );
+                                                        //convert JSON response to java
+                                                        JsonObject main = result.get("main").getAsJsonObject();
+                                                        Double temp = main.get("temp").getAsDouble();
+                                                        widgetTexttemp = temp+" °C";
 
-                                                            // Get the layout for the widget and attach an on-click listener
-                                                            views.setOnClickPendingIntent(R.id.btn_widget, pendingIntent);
+                                                        String name = result.get("name").getAsString();
+                                                        JsonObject sys = result.get("sys").getAsJsonObject();
+                                                        String country = sys.get("country").getAsString();
+                                                        widgetTextcity= name + ", " + country;
 
-                                                            // Tell the AppWidgetManager to perform an update on the current app widget.
-                                                            appWidgetManager.updateAppWidget(appWidgetId, views);
+                                                        JsonArray weather =result.get("weather").getAsJsonArray();
+                                                        String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
+                                                        //print the image
+                                                        //loadIcon(icon);
+                                                        //save the data
+                                                        // Construct the RemoteViews object
+                                                        final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
+                                                        views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                                        views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
 
-                                                            // Instruct the widget manager to update the widget
-                                                            appWidgetManager.updateAppWidget(appWidgetId, views);
 
+                                                        String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
+                                                        try {
+                                                            Bitmap bitmap =
+                                                                    Glide.with(context)
+                                                                            .asBitmap()
+                                                                            .load(iconUrl)
+                                                                            .submit(512, 512)
+                                                                            .get();
+
+                                                            views.setImageViewBitmap(R.id.iconWeather_widget, bitmap);
+                                                        }catch(Exception exception){
+                                                            //handle exceptions (on n'affiche rien
                                                         }
+
+
+
+
+
+                                                        // Create an Intent to launch ExampleActivity
+                                                        Intent intent = new Intent(context, NewAppWidget.class);
+                                                        intent.setAction(ACTION_SIMPLEAPPWIDGET);
+
+                                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                                                /* context = */ context,
+                                                                /* requestCode = */ 0,
+                                                                /* intent = */ intent,
+                                                                /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                                        );
+
+                                                        // Get the layout for the widget and attach an on-click listener
+                                                        views.setOnClickPendingIntent(R.id.btn_widget, pendingIntent);
+
+                                                        // Tell the AppWidgetManager to perform an update on the current app widget.
+                                                        appWidgetManager.updateAppWidget(appWidgetId, views);
+
+                                                        // Instruct the widget manager to update the widget
+                                                        appWidgetManager.updateAppWidget(appWidgetId, views);
+
                                                     }
+                                                }
 
 
-                                                });
-                                    }
-                                }
-
-                            }
-                        });
-
-            }
-            else
-            {
-                Ion.with(context)
-                        .load("http://api.openweathermap.org/data/2.5/weather?q="+city+"&&units=metric&appid="+API_KEY)
-                        .asJsonObject()
-                        .setCallback(new FutureCallback<JsonObject>() {
-                            @Override
-                            public void onCompleted(Exception e, JsonObject result) {
-                                // do stuff with the result
-                                int cod = result.get("cod").getAsInt();
-                                if(!(e!=null) && cod==200) {
-
-                                    //convert JSON response to java
-                                    JsonObject main = result.get("main").getAsJsonObject();
-                                    Double temp = main.get("temp").getAsDouble();
-                                    widgetTexttemp = temp+" °C";
-
-                                    String name = result.get("name").getAsString();
-                                    JsonObject sys = result.get("sys").getAsJsonObject();
-                                    String country = sys.get("country").getAsString();
-                                    widgetTextcity= name + ", " + country;
-
-                                    JsonArray weather =result.get("weather").getAsJsonArray();
-                                    String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
-                                    //print the image
-                                    //loadIcon(icon);
-                                    //save the data
-                                    // Construct the RemoteViews object
-                                    final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                    views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
-                                    views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
-
-
-                                    String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
-                                    try {
-                                        Bitmap bitmap =
-                                                Glide.with(context)
-                                                        .asBitmap()
-                                                        .load(iconUrl)
-                                                        .submit(512, 512)
-                                                        .get();
-
-                                        views.setImageViewBitmap(R.id.iconWeather_widget, bitmap);
-                                    }catch(Exception exception){
-                                        //handle exceptions (on n'affiche rien
-                                    }
-
-
-
-
-
-                                    // Create an Intent to launch ExampleActivity
-                                    Intent intent = new Intent(context, NewAppWidget.class);
-                                    intent.setAction(ACTION_SIMPLEAPPWIDGET);
-
-                                    PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                                            /* context = */ context,
-                                            /* requestCode = */ 0,
-                                            /* intent = */ intent,
-                                            /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
-                                    );
-
-                                    // Get the layout for the widget and attach an on-click listener
-                                    views.setOnClickPendingIntent(R.id.btn_widget, pendingIntent);
-
-                                    // Tell the AppWidgetManager to perform an update on the current app widget.
-                                    appWidgetManager.updateAppWidget(appWidgetId, views);
-
-                                    // Instruct the widget manager to update the widget
-                                    appWidgetManager.updateAppWidget(appWidgetId, views);
-
+                                            });
                                 }
                             }
 
-
-                        });
-
-
-            }
+                        }
+                    });
 
         }
+        else
+        {
+            Ion.with(context)
+                    .load("http://api.openweathermap.org/data/2.5/weather?q="+city+"&&units=metric&appid="+API_KEY)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            // do stuff with the result
+                            int cod = result.get("cod").getAsInt();
+                            if(!(e!=null) && cod==200) {
+
+                                //convert JSON response to java
+                                JsonObject main = result.get("main").getAsJsonObject();
+                                Double temp = main.get("temp").getAsDouble();
+                                widgetTexttemp = temp+" °C";
+
+                                String name = result.get("name").getAsString();
+                                JsonObject sys = result.get("sys").getAsJsonObject();
+                                String country = sys.get("country").getAsString();
+                                widgetTextcity= name + ", " + country;
+
+                                JsonArray weather =result.get("weather").getAsJsonArray();
+                                String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
+                                //print the image
+                                //loadIcon(icon);
+                                //save the data
+                                // Construct the RemoteViews object
+                                final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
+                                views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
+
+
+                                String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
+                                try {
+                                    Bitmap bitmap =
+                                            Glide.with(context)
+                                                    .asBitmap()
+                                                    .load(iconUrl)
+                                                    .submit(512, 512)
+                                                    .get();
+
+                                    views.setImageViewBitmap(R.id.iconWeather_widget, bitmap);
+                                }catch(Exception exception){
+                                    //handle exceptions (on n'affiche rien
+                                }
+
+
+
+
+
+                                // Create an Intent to launch ExampleActivity
+                                Intent intent = new Intent(context, NewAppWidget.class);
+                                intent.setAction(ACTION_SIMPLEAPPWIDGET);
+
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                                        /* context = */ context,
+                                        /* requestCode = */ 0,
+                                        /* intent = */ intent,
+                                        /* flags = */ PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+                                );
+
+                                // Get the layout for the widget and attach an on-click listener
+                                views.setOnClickPendingIntent(R.id.btn_widget, pendingIntent);
+
+                                // Tell the AppWidgetManager to perform an update on the current app widget.
+                                appWidgetManager.updateAppWidget(appWidgetId, views);
+
+                                // Instruct the widget manager to update the widget
+                                appWidgetManager.updateAppWidget(appWidgetId, views);
+
+                            }
+                        }
+
+
+                    });
+
+
+        }
+
+    }
 
 
 
@@ -331,10 +334,12 @@ public class NewAppWidget extends AppWidgetProvider {
                                     Geocoder geocoder = new Geocoder(context, Locale.getDefault());
                                     List<Address> addresses = null;
                                     try {
-                                        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-
+                                        addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
+                                        double lat=addresses.get(0).getLatitude();
+                                        double lon=addresses.get(0).getLongitude();
+                                        String urlAPI="http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=metric&appid="+API_KEY;
                                         Ion.with(context)
-                                                .load("http://api.openweathermap.org/data/2.5/weather?q=" +addresses.get(0).getLocality() + "&&units=metric&appid=" + API_KEY)
+                                                .load(urlAPI)
                                                 .asJsonObject()
                                                 .setCallback(new FutureCallback<JsonObject>() {
                                                     @Override
@@ -445,60 +450,8 @@ public class NewAppWidget extends AppWidgetProvider {
                                 }
                             }
                         });
-            }else{
-                Ion.with(context)
-                        .load("http://api.openweathermap.org/data/2.5/weather?q=" +city + "&&units=metric&appid=" + API_KEY)
-                        .asJsonObject()
-                        .setCallback(new FutureCallback<JsonObject>() {
-                            @Override
-                            public void onCompleted(Exception e, JsonObject result) {
-                                // do stuff with the result
-                                int cod = result.get("cod").getAsInt();
-                                if (!(e != null) && cod == 200) {
-                                    //convert JSON response to java
-                                    JsonObject main = result.get("main").getAsJsonObject();
-                                    Double temp = main.get("temp").getAsDouble();
-
-                                    widgetTexttemp = temp + " °C";
-                                    String name = result.get("name").getAsString();
-                                    JsonObject sys = result.get("sys").getAsJsonObject();
-                                    String country = sys.get("country").getAsString();
-                                    widgetTextcity = name + ", " + country;
-
-                                    JsonArray weather = result.get("weather").getAsJsonArray();
-                                    String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
-
-                                    // Construct the RemoteViews object
-                                    RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                    views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
-                                    views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
-                                    String iconUrl = "https://api.openweathermap.org/img/w/" + icon + ".png";
-                                    // Use Glide to download and display the image asynchronously
-                                    try {
-                                        Toast.makeText(context, "Up To Date", Toast.LENGTH_SHORT).show();
-                                        Bitmap bitmap =
-                                                Glide.with(context)
-                                                        .asBitmap()
-                                                        .load(iconUrl)
-                                                        .submit(512, 512)
-                                                        .get();
-
-                                        views.setImageViewBitmap(R.id.iconWeather_widget, bitmap);
-                                    } catch (Exception exception) {
-                                        //handle exceptions
-                                    }
-                                    ComponentName appWidget = new ComponentName(context, NewAppWidget.class);
-                                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                                    // Instruct the widget manager to update the widget
-                                    appWidgetManager.updateAppWidget(appWidget, views);
-
-
-                                }
-                            }
-
-
-                        });
             }
+
 
         }
     }
@@ -554,6 +507,3 @@ public class NewAppWidget extends AppWidgetProvider {
 
 
 }
-
-
-

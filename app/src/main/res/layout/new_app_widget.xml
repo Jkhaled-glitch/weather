@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
+
     android:background="@drawable/widget"
     android:orientation="vertical">
     <LinearLayout
@@ -79,7 +79,7 @@
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/item_forecast_widget"/>
+        />
 </LinearLayout>
 
 

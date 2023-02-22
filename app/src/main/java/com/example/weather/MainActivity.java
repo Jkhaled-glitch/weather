@@ -67,12 +67,15 @@ public class MainActivity extends AppCompatActivity {
                     etCityName.setError("Enter City Name");
                 else{
                     // TODO : load weather by city name
-                    loadWeatherByCityName(city);
+                    loadWeather(city);
                 }
             }
         });
+
+
     }
-    private void loadWeatherByCityName(String city){
+    private void loadWeather(String city){
+
         Ion.with(getApplicationContext())
                 .load("http://api.openweathermap.org/data/2.5/weather?q="+city+"&&units=metric&appid="+API_KEY)
                 .asJsonObject()
@@ -93,6 +96,56 @@ public class MainActivity extends AppCompatActivity {
                                 tvTemp.setText(temp + " °C");
 
                                 String name = result.get("name").getAsString();
+                                JsonObject sys = result.get("sys").getAsJsonObject();
+                                String country = sys.get("country").getAsString();
+                                tvCity.setText(name + ", " + country);
+
+                                JsonArray weather =result.get("weather").getAsJsonArray();
+                                String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
+                                //print the image
+                                loadIcon(icon);
+                                //save the data
+                                saveDataToSQLite(name);
+
+                                //Handle
+                                JsonObject coord = result.get("coord").getAsJsonObject();
+                                double lon = coord.get("lon").getAsDouble();
+                                double lat = coord.get("lat").getAsDouble();
+                                loadDailyForecast(lon, lat);
+                            }
+                            else{
+                                String message=result.get("message").getAsString();
+                                Toast.makeText(getApplicationContext(),message, Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                    }
+                });
+    }
+
+    private void loadWeather(double lat,double lon){
+        String urlAPI="http://api.openweathermap.org/data/2.5/weather?lat="+lat+"&lon="+lon+"&units=metric&appid="+API_KEY;
+        Ion.with(getApplicationContext())
+                .load(urlAPI)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        // do stuff with the result or error
+                        if(e!=null) {
+                            Toast.makeText(getApplicationContext(),e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+
+                        else{
+                            int cod = result.get("cod").getAsInt();
+                            if(cod==200) {
+                                //convert JSON response to java
+                                JsonObject main = result.get("main").getAsJsonObject();
+                                Double temp = main.get("temp").getAsDouble();
+                                tvTemp.setText(temp + " °C");
+
+                                String name = result.get("name").getAsString();
+                                Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show();
                                 JsonObject sys = result.get("sys").getAsJsonObject();
                                 String country = sys.get("country").getAsString();
                                 tvCity.setText(name + ", " + country);
@@ -169,11 +222,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getCityByLastLocation() {
-        FusedLocationProviderClient fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(getApplicationContext());;
 
-        final String[] city = {""};
+        FusedLocationProviderClient fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(getApplicationContext());
+
         if (ContextCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-
+            //Toast.makeText(getApplicationContext(),"march",Toast.LENGTH_LONG).show();
             fusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(new OnSuccessListener<Location>() {
                         @Override
@@ -182,8 +235,15 @@ public class MainActivity extends AppCompatActivity {
                                 Geocoder geocoder=new Geocoder(MainActivity.this, Locale.getDefault());
                                 List<Address> addresses= null;
                                 try {
+                                    //double lat=0;
+
+
                                     addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
-                                    loadWeatherByCityName(addresses.get(0).getLocality());
+
+                                    double lat=addresses.get(0).getLatitude();
+                                    double lon=addresses.get(0).getLongitude();
+
+                                    loadWeather(lat,lon);
 
 
                                 } catch (IOException e) {
