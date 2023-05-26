@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="12dp"
+    android:background="#FF1f1f38"
     tools:context=".MainActivity">
     <LinearLayout
 
@@ -22,64 +23,140 @@
        android:layout_width="0dp"
        android:layout_height="44dp"
        android:layout_weight="70"
-       android:background="@drawable/borderedittext"/>
+       android:textColor="@color/white"
+       android:background="@drawable/borderedittext"
+       android:layout_marginRight="10dp"/>
     <Button
         android:id="@+id/btnSearch"
         android:text="Search"
         android:layout_width="0dp"
         android:layout_weight="30"
-        android:background="@drawable/background_button"
+        android:background="@drawable/borderedittext"
         android:layout_height="45dp"/>
 
    </LinearLayout>
 
 
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:background="@drawable/borderedittext"
+        android:layout_height="250dp"
+        android:orientation="vertical"
+        android:padding="20dp"
+        android:layout_marginTop="10dp"
+        android:background="#2c2c6c"
         >
-        <ImageView
-            android:id="@+id/iconWeather"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:scaleType="centerCrop"
-
-            />
-
-
         <LinearLayout
-
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
             >
-            <TextView
-                android:id="@+id/tvTemp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                tools:text="20 °C"/>
-            <TextView
-                android:id="@+id/tvCity"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="City Name, country"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+
+                    />
+
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="Thursday 23 February"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="11:48"
+                    android:textColor="@color/white"
+                    android:textSize="32sp" />
+
+                <TextView
+                    android:id="@+id/weather_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="weather"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textColor="@color/white"
+                    android:layout_marginBottom="10dp"
+                    android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/wind"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Wind: 5kh/h"
+                    android:textStyle="bold"/>
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:gravity="center">
+                <TextView
+                    android:id="@+id/max_min_temp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="13°|23°"/>
+                <ImageView
+                    android:id="@+id/iconWeather"
+                    android:layout_width="100dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon04d"
+                    android:layout_marginBottom="5dp"
+                    />
+                <TextView
+                    android:id="@+id/tvTemp"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="26sp"
+                    android:layout_marginBottom="5dp"
+                    android:textStyle="bold"
+                    android:text="19°"/>
+                <TextView
+                    android:id="@+id/humidity"
+                    android:textColor="@color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Humidity : 19°"
+                    android:layout_marginBottom="5dp"
+                    android:textStyle="bold"/>
 
-                android:textSize="30sp"
-                android:textStyle="bold"
-                tools:text="London, US"/>
-
-
-
+            </LinearLayout>
 
         </LinearLayout>
+
+
+
 
 
 

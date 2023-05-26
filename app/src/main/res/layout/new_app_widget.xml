@@ -1,85 +1,127 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-
-    android:background="@drawable/widget"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="@drawable/widget_background">
     <LinearLayout
-
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="horizontal"
-
-        android:gravity="center"
         >
-        <ImageView
-            android:id="@+id/iconWeather_widget"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/icon04d"
-            android:layout_margin="5dp"
-            />
-
 
         <LinearLayout
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:orientation="vertical"
-            android:gravity="center_vertical"
-
-            >
-            <RelativeLayout
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
-
-                <TextView
-                    android:id="@+id/tvTemp_widget"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="temp"
-                    android:textColor="#ddd"
-                    android:textSize="25sp"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_widget"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/ic_baseline_refresh_24"
-                    android:scaleType="centerCrop" />
-
-            </RelativeLayout>
             <TextView
                 android:id="@+id/tvCity_widget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#eee"
-
-                android:textSize="25sp"
+                android:layout_marginBottom="10dp"
+                android:text="City Name, country"
+                android:textColor="@color/white"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="city, country"/>
 
+                />
 
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="Thursday 23 February"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="11:48"
+                android:textColor="@color/white"
+                android:textSize="32sp" />
 
+            <TextView
+                android:id="@+id/weather_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="weather"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_widget"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/ic_baseline_refresh_24"
+                android:text="b" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="160dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/max_min_temp"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="13°|23°"/>
+            <ImageView
+                android:id="@+id/iconWeather_widget"
+                android:layout_width="100dp"
+                android:layout_height="80dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/icon04d"
+                android:layout_marginBottom="5dp"
+                />
+            <TextView
+                android:id="@+id/tvTemp_widget"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="26sp"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"
+                android:text="19°"/>
+            <TextView
+                android:id="@+id/humidity"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Humidity : 19°"
+                android:layout_marginBottom="5dp"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/wind"
+                android:textColor="@color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Wind: 5kh/h"
+                android:textStyle="bold"/>
         </LinearLayout>
 
-
-
-
     </LinearLayout>
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+
+
+
+
+
+
 </LinearLayout>
-
-

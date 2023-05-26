@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,9 +32,13 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity {
     public static final String API_KEY="cff42b35ce9e1ad989fc956cf2010514";
@@ -42,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Button btnSearch;
     EditText etCityName;
     ImageView iconWeather;
-    TextView tvTemp,tvCity;
+    TextView tvTemp,tvCity,tvDate,tvTime,tvWeather_status,tvDescription,tvTemp_max_min,tvHumidity,tvWind;
     ListView dailyWeather;
 
 
@@ -56,8 +61,15 @@ public class MainActivity extends AppCompatActivity {
         tvTemp= findViewById(R.id.tvTemp);
         tvCity= findViewById(R.id.tvCity);
         dailyWeather= findViewById(R.id.dailyWeather);
-        getCityByLastLocation();
+        tvDate=findViewById(R.id.date);
+        tvTime=findViewById(R.id.time);
+        tvWeather_status=findViewById(R.id.weather_status);
+        tvDescription=findViewById(R.id.description);
+        tvTemp_max_min=findViewById(R.id.max_min_temp);
+        tvHumidity=findViewById(R.id.humidity);
+        tvWind=findViewById(R.id.wind);
 
+        getCityByLastLocation();
 
         btnSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,8 +84,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
+
     private void loadWeather(String city){
 
         Ion.with(getApplicationContext())
@@ -93,15 +105,47 @@ public class MainActivity extends AppCompatActivity {
                                 //convert JSON response to java
                                 JsonObject main = result.get("main").getAsJsonObject();
                                 Double temp = main.get("temp").getAsDouble();
-                                tvTemp.setText(temp + " °C");
+
 
                                 String name = result.get("name").getAsString();
                                 JsonObject sys = result.get("sys").getAsJsonObject();
                                 String country = sys.get("country").getAsString();
-                                tvCity.setText(name + ", " + country);
+
 
                                 JsonArray weather =result.get("weather").getAsJsonArray();
                                 String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
+
+                                String description=weather.get(0).getAsJsonObject().get("description").getAsString();
+                                String weather_status=weather.get(0).getAsJsonObject().get("main").getAsString();
+                                String temp_min=main.get("temp_min").getAsString();
+                                String temp_max=main.get("temp_max").getAsString();
+                                double humidity=main.get("humidity").getAsDouble();
+                                double speed=result.get("wind").getAsJsonObject().get("speed").getAsDouble();
+                                long dt=result.get("dt").getAsLong();
+                                int timezone=result.get("timezone").getAsInt();
+
+                                //date and hour
+                                Date dtDate= new Date(dt*1000);
+                                DateFormat dateFormat =new SimpleDateFormat("EEE,dd MMM  ", Locale.ENGLISH);
+                                DateFormat hourFormat =new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+                                hourFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                dateFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                String date=dateFormat.format(dtDate);
+                                String hour = hourFormat.format(dtDate);
+
+                                //update views
+                                tvCity.setText(name + ", " + country);
+                                tvDate.setText(date);
+                                tvTime.setText(hour);
+                                tvWeather_status.setText(weather_status);
+                                tvDescription.setText(description);
+                                tvTemp_max_min.setText(temp_min+"|"+temp_max);
+                                tvTime.setText(hour);
+                                tvTemp.setText(temp + " °C");
+                                tvHumidity.setText("Humidity: "+humidity);
+                                tvWind.setText("Wind: "+speed+"km/h");
+
+
                                 //print the image
                                 loadIcon(icon);
                                 //save the data
@@ -142,16 +186,45 @@ public class MainActivity extends AppCompatActivity {
                                 //convert JSON response to java
                                 JsonObject main = result.get("main").getAsJsonObject();
                                 Double temp = main.get("temp").getAsDouble();
-                                tvTemp.setText(temp + " °C");
+
 
                                 String name = result.get("name").getAsString();
                                 Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show();
                                 JsonObject sys = result.get("sys").getAsJsonObject();
                                 String country = sys.get("country").getAsString();
-                                tvCity.setText(name + ", " + country);
 
                                 JsonArray weather =result.get("weather").getAsJsonArray();
                                 String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
+
+                                String description=weather.get(0).getAsJsonObject().get("description").getAsString();
+                                String weather_status=weather.get(0).getAsJsonObject().get("main").getAsString();
+                                String temp_min=main.get("temp_min").getAsString();
+                                String temp_max=main.get("temp_max").getAsString();
+                                double humidity=main.get("humidity").getAsDouble();
+                                double speed=result.get("wind").getAsJsonObject().get("speed").getAsDouble();
+                                long dt=result.get("dt").getAsLong();
+                                int timezone=result.get("timezone").getAsInt();
+
+                                //date and hour
+                                Date dtDate= new Date(dt*1000);
+                                DateFormat dateFormat =new SimpleDateFormat("EEE,dd MMM  ", Locale.ENGLISH);
+                                DateFormat hourFormat =new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+                                hourFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                dateFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                String date=dateFormat.format(dtDate);
+                                String hour = hourFormat.format(dtDate);
+
+                                //update views
+                                tvCity.setText(name + ", " + country);
+                                tvDate.setText(date);
+                                tvTime.setText(hour);
+                                tvWeather_status.setText(weather_status);
+                                tvDescription.setText(description);
+                                tvTemp_max_min.setText(temp_min+"|"+temp_max);
+                                tvTime.setText(hour);
+                                tvTemp.setText(temp + " °C");
+                                tvHumidity.setText("Humidity: "+humidity);
+                                tvWind.setText("Wind: "+speed+"km/h");
                                 //print the image
                                 loadIcon(icon);
                                 //save the data

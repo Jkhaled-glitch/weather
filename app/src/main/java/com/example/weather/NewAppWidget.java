@@ -30,9 +30,12 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 
 /**
@@ -92,13 +95,38 @@ public class NewAppWidget extends AppWidgetProvider {
 
                                                         JsonArray weather =result.get("weather").getAsJsonArray();
                                                         String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
-                                                        //print the image
-                                                        //loadIcon(icon);
-                                                        //save the data
-                                                        // Construct the RemoteViews object
+
+                                                        String description=weather.get(0).getAsJsonObject().get("description").getAsString();
+                                                        String weather_status=weather.get(0).getAsJsonObject().get("main").getAsString();
+                                                        String temp_min=main.get("temp_min").getAsString();
+                                                        String temp_max=main.get("temp_max").getAsString();
+                                                        double humidity=main.get("humidity").getAsDouble();
+                                                        double speed=result.get("wind").getAsJsonObject().get("speed").getAsDouble();
+                                                        long dt=result.get("dt").getAsLong();
+                                                        int timezone=result.get("timezone").getAsInt();
+
+                                                        //date and hour
+                                                        Date dtDate= new Date(dt*1000);
+                                                        DateFormat dateFormat =new SimpleDateFormat("EEE,dd MMM  ", Locale.ENGLISH);
+                                                        DateFormat hourFormat =new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+                                                        hourFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                                        dateFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                                        String date=dateFormat.format(dtDate);
+                                                        String hour = hourFormat.format(dtDate);
+
+
                                                         final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                                        views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
                                                         views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
+                                                        views.setTextViewText(R.id.date, date);
+                                                        views.setTextViewText(R.id.time, hour);
+                                                        views.setTextViewText(R.id.weather_status, weather_status);
+                                                        views.setTextViewText(R.id.description, description);
+                                                        views.setTextViewText(R.id.max_min_temp, temp_min+"|"+temp_max);
+                                                        views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                                        views.setTextViewText(R.id.humidity, "Humidity: "+Double.toString(humidity));
+                                                        views.setTextViewText(R.id.wind, "Wind: "+Double.toString(speed));
+
+
 
 
                                                         String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
@@ -149,7 +177,8 @@ public class NewAppWidget extends AppWidgetProvider {
 
 
 
-                                } catch (IOException e) {
+                                } catch (IOException e)
+                                {
                                     e.printStackTrace();
                                     Ion.with(context)
                                             .load("http://api.openweathermap.org/data/2.5/weather?q="+city+"&&units=metric&appid="+API_KEY)
@@ -173,13 +202,36 @@ public class NewAppWidget extends AppWidgetProvider {
 
                                                         JsonArray weather =result.get("weather").getAsJsonArray();
                                                         String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
-                                                        //print the image
-                                                        //loadIcon(icon);
-                                                        //save the data
-                                                        // Construct the RemoteViews object
+
+                                                        String description=weather.get(0).getAsJsonObject().get("description").getAsString();
+                                                        String weather_status=weather.get(0).getAsJsonObject().get("main").getAsString();
+                                                        String temp_min=main.get("temp_min").getAsString();
+                                                        String temp_max=main.get("temp_max").getAsString();
+                                                        double humidity=main.get("humidity").getAsDouble();
+                                                        double speed=result.get("wind").getAsJsonObject().get("speed").getAsDouble();
+                                                        long dt=result.get("dt").getAsLong();
+                                                        int timezone=result.get("timezone").getAsInt();
+
+                                                        //date and hour
+                                                        Date dtDate= new Date(dt*1000);
+                                                        DateFormat dateFormat =new SimpleDateFormat("EEE,dd MMM  ", Locale.ENGLISH);
+                                                        DateFormat hourFormat =new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+                                                        hourFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                                        dateFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                                        String date=dateFormat.format(dtDate);
+                                                        String hour = hourFormat.format(dtDate);
+
+
                                                         final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                                        views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
                                                         views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
+                                                        views.setTextViewText(R.id.date, date);
+                                                        views.setTextViewText(R.id.time, hour);
+                                                        views.setTextViewText(R.id.weather_status, weather_status);
+                                                        views.setTextViewText(R.id.description, description);
+                                                        views.setTextViewText(R.id.max_min_temp, temp_min+"|"+temp_max);
+                                                        views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                                        views.setTextViewText(R.id.humidity, "Humidity: "+Double.toString(humidity));
+                                                        views.setTextViewText(R.id.wind, "Wind: "+Double.toString(speed));
 
 
                                                         String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
@@ -256,13 +308,35 @@ public class NewAppWidget extends AppWidgetProvider {
 
                                 JsonArray weather =result.get("weather").getAsJsonArray();
                                 String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
-                                //print the image
-                                //loadIcon(icon);
-                                //save the data
-                                // Construct the RemoteViews object
+                                String description=weather.get(0).getAsJsonObject().get("description").getAsString();
+                                String weather_status=weather.get(0).getAsJsonObject().get("main").getAsString();
+                                String temp_min=main.get("temp_min").getAsString();
+                                String temp_max=main.get("temp_max").getAsString();
+                                double humidity=main.get("humidity").getAsDouble();
+                                double speed=result.get("wind").getAsJsonObject().get("speed").getAsDouble();
+                                long dt=result.get("dt").getAsLong();
+                                int timezone=result.get("timezone").getAsInt();
+
+                                //date and hour
+                                Date dtDate= new Date(dt*1000);
+                                DateFormat dateFormat =new SimpleDateFormat("EEE,dd MMM  ", Locale.ENGLISH);
+                                DateFormat hourFormat =new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+                                hourFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                dateFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                String date=dateFormat.format(dtDate);
+                                String hour = hourFormat.format(dtDate);
+
+
                                 final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
                                 views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
+                                views.setTextViewText(R.id.date, date);
+                                views.setTextViewText(R.id.time, hour);
+                                views.setTextViewText(R.id.weather_status, weather_status);
+                                views.setTextViewText(R.id.description, description);
+                                views.setTextViewText(R.id.max_min_temp, temp_min+"|"+temp_max);
+                                views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                views.setTextViewText(R.id.humidity, "Humidity: "+Double.toString(humidity));
+                                views.setTextViewText(R.id.wind, "Wind: "+Double.toString(speed));
 
 
                                 String iconUrl = "https://api.openweathermap.org/img/w/"+icon+".png";
@@ -415,11 +489,35 @@ public class NewAppWidget extends AppWidgetProvider {
 
                                                             JsonArray weather = result.get("weather").getAsJsonArray();
                                                             String icon = weather.get(0).getAsJsonObject().get("icon").getAsString();
+                                                            String description=weather.get(0).getAsJsonObject().get("description").getAsString();
+                                                            String weather_status=weather.get(0).getAsJsonObject().get("main").getAsString();
+                                                            String temp_min=main.get("temp_min").getAsString();
+                                                            String temp_max=main.get("temp_max").getAsString();
+                                                            double humidity=main.get("humidity").getAsDouble();
+                                                            double speed=result.get("wind").getAsJsonObject().get("speed").getAsDouble();
+                                                            long dt=result.get("dt").getAsLong();
+                                                            int timezone=result.get("timezone").getAsInt();
 
-                                                            // Construct the RemoteViews object
-                                                            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
-                                                            views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                                            //date and hour
+                                                            Date dtDate= new Date(dt*1000);
+                                                            DateFormat dateFormat =new SimpleDateFormat("EEE,dd MMM  ", Locale.ENGLISH);
+                                                            DateFormat hourFormat =new SimpleDateFormat("hh:mm", Locale.ENGLISH);
+                                                            hourFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                                            dateFormat.setTimeZone(TimeZone.getTimeZone(Integer.toString(timezone)));
+                                                            String date=dateFormat.format(dtDate);
+                                                            String hour = hourFormat.format(dtDate);
+
+
+                                                            final   RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.new_app_widget);
                                                             views.setTextViewText(R.id.tvCity_widget, widgetTextcity);
+                                                            views.setTextViewText(R.id.date, date);
+                                                            views.setTextViewText(R.id.time, hour);
+                                                            views.setTextViewText(R.id.weather_status, weather_status);
+                                                            views.setTextViewText(R.id.description, description);
+                                                            views.setTextViewText(R.id.max_min_temp, temp_min+"|"+temp_max);
+                                                            views.setTextViewText(R.id.tvTemp_widget, widgetTexttemp);
+                                                            views.setTextViewText(R.id.humidity, "Humidity: "+Double.toString(humidity));
+                                                            views.setTextViewText(R.id.wind, "Wind: "+Double.toString(speed));
                                                             String iconUrl = "https://api.openweathermap.org/img/w/" + icon + ".png";
                                                             // Use Glide to download and display the image asynchronously
                                                             try {
